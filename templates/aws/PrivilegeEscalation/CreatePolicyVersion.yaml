@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Privilege escalation path for user with iam:CreatePolicyVersion permission"
+Resources:
+  iamUser:
+      Type: AWS::IAM::User
+      Properties:
+        Tags:
+        - Key: "AWSIAMSimuland"
+          Value: "PrivEscviaCreateNewPolicyVersion"
+  iamAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName:
+        !Ref iamUser
+  iamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+                - iam.amazonaws.com
+          Action:
+            - sts:AssumeRole
+      RoleName: 'iamPrivEsc-CreatePolicyVersion-Role'
+      Tags:
+        - Key: "AWSIAMSimuland"
+          Value: "PrivEscviaCreateNewPolicyVersion"
+  iamPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: PrivilegeEscalationPath-CreatePolicyVersion
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action: "iam:CreatePolicyVersion"
+          Resource: "*"
+      Roles:
+      - !Ref iamRole
+Parameters: {}
+Metadata: {}
+Conditions: {}
+Outputs:
+  User: 
+    Value: !Ref iamUser
+  Role:
+      Value: !Ref iamRole
+  Policy:
+      Value: !Ref iamPolicy
+  AccessKeyID:
+    Value: !Ref iamAccessKey
+  SecretAccessKey:
+    Value: !GetAtt iamAccessKey.SecretAccessKey

@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ""
+Resources:
+  IamUser:
+    Type: "AWS::IAM::User"
+    Properties:
+      UserName: "dummyser"
+      Path: "/"
+      Groups:
+        - "Simulation"
+      Policies:
+        - PolicyName: ""
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: []
+                Resource: ""
+                Condition: {}
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+    IamRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: "SimulationRole"
+        Path: "/"
+        MaxSessionDuration: 3600
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement: []  
+Parameters: {}
+Metadata: {}
+Conditions: {}

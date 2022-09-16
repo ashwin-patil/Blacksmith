@@ -24,7 +24,7 @@ Resources:
                 - iam.amazonaws.com
           Action:
             - sts:AssumeRole
-      RoleName: 'iamPrivEsc-CreatePolicyVersion-Role'
+      RoleName: 'iamPrivEsc-CreatePolicyVersion'
       Tags:
         - Key: "AWSIAMSimuland"
           Value: "PrivEscviaCreateNewPolicyVersion"
@@ -39,18 +39,20 @@ Resources:
           Action: "iam:CreatePolicyVersion"
           Resource: "*"
       Roles:
-      - !Ref iamRole
-Parameters: {}
-Metadata: {}
-Conditions: {}
+        !Ref iamRole
 Outputs:
   User: 
-    Value: !Ref iamUser
+    Value: 
+      !Ref iamUser
   Role:
-      Value: !Ref iamRole
+      Value: 
+        !Ref iamRole
   Policy:
-      Value: !Ref iamPolicy
+      Value: 
+        !Ref iamPolicy
   AccessKeyID:
-    Value: !Ref iamAccessKey
+    Value: 
+      !Ref iamAccessKey
   SecretAccessKey:
-    Value: !GetAtt iamAccessKey.SecretAccessKey
+    Value: 
+      !GetAtt iamAccessKey.SecretAccessKey

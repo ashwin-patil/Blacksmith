@@ -4,6 +4,8 @@ Resources:
   iamUser:
       Type: AWS::IAM::User
       Properties:
+        ManagedPolicyArns: 
+            - !Ref iamPolicy
         Tags:
         - Key: "AWSIAMSimuland"
           Value: "PrivEscviaCreateNewPolicyVersion"
@@ -24,32 +26,23 @@ Resources:
                 - iam.amazonaws.com
           Action:
             - sts:AssumeRole
-      RoleName: 'iamPrivEsc-CreatePolicyVersion'
+      RoleName: 'iamPrivEsc-CreatePolicyVersion-Role'
+      ManagedPolicyArns: 
+        - !Ref iamPolicy
       Tags:
         - Key: "AWSIAMSimuland"
           Value: "PrivEscviaCreateNewPolicyVersion"
   iamPolicy:
-    Type: AWS::IAM::Policy
+    Type: AWS::IAM::ManagedPolicy
     Properties:
-      PolicyName: PrivilegeEscalationPath-CreatePolicyVersion
+      ManagedPolicyName: PrivilegeEscalationPath-CreatePolicyVersion
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
         - Effect: Allow
           Action: "iam:CreatePolicyVersion"
           Resource: "*"
-      Roles:
-        !Ref iamRole
 Outputs:
-  User: 
-    Value: 
-      !Ref iamUser
-  Role:
-      Value: 
-        !Ref iamRole
-  Policy:
-      Value: 
-        !Ref iamPolicy
   AccessKeyID:
     Value: 
       !Ref iamAccessKey

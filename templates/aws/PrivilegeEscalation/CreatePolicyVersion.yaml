@@ -1,5 +1,38 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "Privilege escalation path for user with iam:CreatePolicyVersion permission"
+
+Parameters:
+  S3StackName:
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: '^[a-zA-Z][-a-zA-Z0-9]*$'
+    Default: SecurityDataSetsStack
+  TagsKeyParam:
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: '^[a-zA-Z][-a-zA-Z0-9]*$'
+    Default: AWSIAMSimuland
+  TagsValueParam:
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: '^[a-zA-Z][-a-zA-Z0-9]*$'
+    Default: PrivEscviaCreateNewPolicyVersion
+  RoleNameParam:
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: '^[a-zA-Z][-a-zA-Z0-9]*$'
+    Default: iamPrivEsc-CreatePolicyVersion-Role
+  ManagedPolicyNameParam:
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: '^[a-zA-Z][-a-zA-Z0-9]*$'
+    Default: PrivilegeEscalationPath-CreatePolicyVersion
+
 Resources:
   iamUser:
       Type: AWS::IAM::User
@@ -7,8 +40,10 @@ Resources:
         ManagedPolicyArns: 
             - !Ref iamPolicy
         Tags:
-        - Key: "AWSIAMSimuland"
-          Value: "PrivEscviaCreateNewPolicyVersion"
+        - Key: 
+            Ref: TagsKeyParam
+          Value:
+            Ref: TagsValueParam
   iamAccessKey:
     Type: AWS::IAM::AccessKey
     Properties:
@@ -26,22 +61,27 @@ Resources:
                 - iam.amazonaws.com
           Action:
             - sts:AssumeRole
-      RoleName: 'iamPrivEsc-CreatePolicyVersion-Role'
+      RoleName:
+            Ref: RoleNameParam
       ManagedPolicyArns: 
         - !Ref iamPolicy
       Tags:
-        - Key: "AWSIAMSimuland"
-          Value: "PrivEscviaCreateNewPolicyVersion"
+        - Key: 
+            Ref: TagsKeyParam
+          Value:
+            Ref: TagsValueParam
   iamPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      ManagedPolicyName: PrivilegeEscalationPath-CreatePolicyVersion
+      ManagedPolicyName:
+        Ref: ManagedPolicyNameParam
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
         - Effect: Allow
           Action: "iam:CreatePolicyVersion"
           Resource: "*"
+
 Outputs:
   AccessKeyID:
     Value: 
